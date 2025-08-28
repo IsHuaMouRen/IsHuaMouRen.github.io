@@ -1,24 +1,127 @@
 <!DOCTYPE html>
-<html lang="zh_cn">
+<html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HuaMouRen的官方网站</title>
+    <title>HuaMouRen 的个人网站</title>
+    <!-- 网站图标（头像） -->
+    <link rel="icon" type="image/png" href="assets/avatar.png">
+    <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
+    <!-- 导航栏 -->
+    <header>
+        <nav>
+            <h1 class="logo">华某人 · HuaMouRen</h1>
+            <ul class="nav-links">
+                <li><a href="#home">主页</a></li>
+                <li><a href="#repos">仓库</a></li>
+                <li><a href="#top-repos">热门仓库</a></li>
+                <li><a href="#about">关于</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <div class="nav">
-        <h1>HuaMouRen的官方网站</h1>
-        <hr>
+    <!-- 主页 -->
+    <section id="home" class="section">
+        <div class="container home-container">
+            <img src="assets/avatar.png" alt="HuaMouRen 头像" class="avatar">
+            <h2>欢迎来到我的个人网站</h2>
+            <p>我是 <b>HuaMouRen（华某人）</b>，一名热爱编程与开源的开发者。</p>
+            <p>这里记录了我的一些作品与联系方式。</p>
+        </div>
+    </section>
 
-        <a href="index.html">0.主页</a>
-        <a href="about.html">1.关于</a>
+    <!-- 仓库（手动维护） -->
+    <section id="repos" class="section alt">
+        <div class="container">
+            <h2>项目仓库</h2>
+            <div class="repos-list">
+                <div class="repo-card">
+                    <h3><a href="https://github.com/IsHuaMouRen/Pinger" target="_blank">Pinger</a></h3>
+                    <p>一个支持多线程、可自定义数据包大小的 Ping 工具，基于 C# Winform .NET Framework 开发。</p>
+                </div>
+                <div class="repo-card">
+                    <h3><a href="https://github.com/IsHuaMouRen/IsHuaMouRen.github.io" target="_blank">个人网站</a></h3>
+                    <p>我的 GitHub Pages 个人主页，用于展示项目与个人信息。</p>
+                </div>
+                <div class="repo-card">
+                    <h3><a href="https://github.com/IsHuaMouRen/PvzLauncher" target="_blank">PvzLauncher</a></h3>
+                    <p>快捷管理、启动植物大战僵尸的启动器。</p>
+                </div>
+                <div class="repo-card">
+                    <h3><a href="https://github.com/IsHuaMouRen/MacroEngine" target="_blank">MacroEngine</a></h3>
+                    <p>快速自定义并运行你的宏。</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <hr>
-    </div>
+    <!-- 热门仓库（自动获取前10个star最多的） -->
+    <section id="top-repos" class="section">
+        <div class="container">
+            <h2>热门仓库</h2>
+            <div id="top-repos-list" class="repos-list">
+                <p>加载中...</p>
+            </div>
+        </div>
+    </section>
 
+    <!-- 关于 -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2>关于我</h2>
+            <p>你好！我是 <b>华某人（HuaMouRen）</b>，一名热衷于开源、喜欢探索新技术的开发者。</p>
+            <p>我平时会在 GitHub 上分享一些小工具或实验项目。</p>
+            <h3>社交平台</h3>
+            <ul class="social-links">
+                <li><a href="https://github.com/IsHuaMouRen" target="_blank">GitHub</a></li>
+                <li><a href="https://space.bilibili.com/1794899926" target="_blank">Bilibili</a></li>
+                <li><a href="https://zh.minecraft.wiki/w/User:HuaMouRen" target="_blank">中文 Minecraft wiki</a></li>
+                <li><a href="assets/MinecraftUsername.txt" target="_blank">Minecraft</a></li>
+            </ul>
+        </div>
+    </section>
 
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2025 HuaMouRen · 华某人 | 基于 GitHub Pages 部署</p>
+    </footer>
 
+    <!-- GitHub API 脚本：获取前10个按 star 排序的仓库 -->
+    <script>
+        async function loadTopRepos() {
+            const container = document.getElementById("top-repos-list");
+            try {
+                const response = await fetch("https://api.github.com/users/IsHuaMouRen/repos?per_page=100");
+                const repos = await response.json();
 
+                // 排序：按 stargazers_count 从大到小
+                repos.sort((a, b) => b.stargazers_count - a.stargazers_count);
+
+                // 取前10
+                const top10 = repos.slice(0, 10);
+
+                container.innerHTML = "";
+                top10.forEach(repo => {
+                    const div = document.createElement("div");
+                    div.className = "repo-card";
+                    div.innerHTML = `
+            <h3><a href="${repo.html_url}" target="_blank">${repo.name}</a></h3>
+            <p>${repo.description || "暂无描述"}</p>
+            <p>⭐ ${repo.stargazers_count} | 🍴 ${repo.forks_count}</p>
+          `;
+                    container.appendChild(div);
+                });
+            } catch (error) {
+                container.innerHTML = "<p>加载失败，请稍后再试。</p>";
+            }
+        }
+
+        loadTopRepos();
+    </script>
 </body>
+
 </html>
